@@ -1,6 +1,6 @@
-export interface productUpdateInterface {
-  Product_id: number;
-  Product_Name?: string;
-  Product_Category?: string;
-  Product_description?: string;
+export interface Product_Update_Interface {
+  product_Id: number;
+  product_Name?: string;
+  product_Category?: string;
+  product_Description?: string;
 }

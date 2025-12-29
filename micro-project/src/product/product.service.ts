@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { productInterface } from './interfaces/products.interface';
-import { Product } from './schema/product.schema';
 import { Model } from 'mongoose';
-import type { productUpdateInterface } from './interfaces/productsUpdate.interface';
-import type { productDeleteInterface } from './interfaces/productsDelete.interface';
+import { Product } from './schema/product.schema';
+import { Product_Interface } from './interfaces/products.interface';
+import type { Product_Update_Interface } from './interfaces/productsUpdate.interface';
+import type { Product_Delete_Interface } from './interfaces/productsDelete.interface';
 
 @Injectable()
 export class ProductService {
@@ -18,8 +18,8 @@ export class ProductService {
   }
 
   // For Get Product Based on Category
-  async getCategoryProduct(category: string): Promise<productInterface[]> {
-    const categoryProduct: productInterface[] = await this.productModel
+  async getCategoryProduct(category: string): Promise<Product_Interface[]> {
+    const categoryProduct: Product_Interface[] = await this.productModel
       .find({ productCategory: new RegExp(`^${category}$`, 'i') })
       .exec();
     if (!categoryProduct || categoryProduct.length == 0) {
@@ -29,9 +29,9 @@ export class ProductService {
   }
 
   // For Adding Product
-  async addProduct(product: productInterface): Promise<string> {
+  async addProduct(product: Product_Interface): Promise<string> {
     if (
-      (await this.productModel.find({ Product_id: product.Product_id }))
+      (await this.productModel.find({ Product_id: product.product_Id }))
         .length > 0
     ) {
       return 'Already Exist';
@@ -44,20 +44,20 @@ export class ProductService {
   }
 
   // For Updating Product
-  async updateProduct(product: productUpdateInterface): Promise<string> {
+  async updateProduct(product: Product_Update_Interface): Promise<string> {
     if (
       await this.productModel.findOneAndUpdate(
-        { Product_id: product.Product_id },
+        { Product_id: product.product_Id },
         { $set: product },
       )
     ) {
       return 'Product Update';
     }
-    return 'Product Not Found';
+    throw new NotFoundException(`Product not found`);
   }
 
   // For Deleting Product
-  async deleteProduct(product: productDeleteInterface): Promise<string> {
+  async deleteProduct(product: Product_Delete_Interface): Promise<string> {
     if (await this.productModel.findOneAndDelete(product)) {
       return 'One Product Dlete';
     }
