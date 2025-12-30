@@ -6,16 +6,16 @@ export type ProductDocument = HydratedDocument<Product>;
 @Schema()
 export class Product {
   @Prop({ required: true })
-  product_Id: number;
+  product_id: number;
 
   @Prop({ required: true })
-  product_Name: string;
+  product_name: string;
 
   @Prop({ required: true })
-  product_Category: string;
+  product_category: string;
 
   @Prop()
-  product_Description: string;
+  product_description: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

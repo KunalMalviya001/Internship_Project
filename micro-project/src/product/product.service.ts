@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './schema/product.schema';
-import { Product_Interface } from './interfaces/products.interface';
-import type { Product_Update_Interface } from './interfaces/productsUpdate.interface';
-import type { Product_Delete_Interface } from './interfaces/productsDelete.interface';
+import { ProductInterface } from './interfaces/products.interface';
+import type { ProductUpdateInterface } from './interfaces/productsUpdate.interface';
+import type { ProductDeleteInterface } from './interfaces/productsDelete.interface';
 
 @Injectable()
 export class ProductService {
@@ -18,10 +18,10 @@ export class ProductService {
   }
 
   // For Get Product Based on Category
-  async getCategoryProduct(category: string): Promise<Product_Interface[]> {
-    const categoryProduct: Product_Interface[] = await this.productModel
-      .find({ productCategory: new RegExp(`^${category}$`, 'i') })
-      .exec();
+  async getCategoryProduct(category: string): Promise<ProductInterface[]> {
+    const categoryProduct: ProductInterface[] = await this.productModel.find({
+      product_category: new RegExp(`^${category}$`, 'i'),
+    });
     if (!categoryProduct || categoryProduct.length == 0) {
       throw new NotFoundException(`Product ${category} not found`);
     }
@@ -29,9 +29,9 @@ export class ProductService {
   }
 
   // For Adding Product
-  async addProduct(product: Product_Interface): Promise<string> {
+  async addProduct(product: ProductInterface): Promise<string> {
     if (
-      (await this.productModel.find({ Product_id: product.product_Id }))
+      (await this.productModel.find({ product_id: product.product_id }))
         .length > 0
     ) {
       return 'Already Exist';
@@ -44,10 +44,10 @@ export class ProductService {
   }
 
   // For Updating Product
-  async updateProduct(product: Product_Update_Interface): Promise<string> {
+  async updateProduct(product: ProductUpdateInterface): Promise<string> {
     if (
       await this.productModel.findOneAndUpdate(
-        { Product_id: product.product_Id },
+        { product_id: product.product_id },
         { $set: product },
       )
     ) {
@@ -57,7 +57,7 @@ export class ProductService {
   }
 
   // For Deleting Product
-  async deleteProduct(product: Product_Delete_Interface): Promise<string> {
+  async deleteProduct(product: ProductDeleteInterface): Promise<string> {
     if (await this.productModel.findOneAndDelete(product)) {
       return 'One Product Dlete';
     }

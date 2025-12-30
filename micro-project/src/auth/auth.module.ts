@@ -4,6 +4,8 @@ import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import dotenv from 'dotenv';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth.guard';
 dotenv.config();
 
 @Module({
@@ -16,7 +18,13 @@ dotenv.config();
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}

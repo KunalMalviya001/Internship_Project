@@ -1,9 +1,17 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { User_Interface } from './interface/user.interface';
+import { UserInterface } from './interface/user.interface';
+import type { UserUpdateInterface } from './interface/userUpdate.interface';
 import bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './schema/user.schema';
+import { error } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -13,18 +21,17 @@ export class AuthService {
   ) {}
 
   // For Login
-  async login(
-    user: User_Interface,
+  async loginUser(
+    user: UserInterface,
   ): Promise<{ access_token: string } | Error | undefined> {
-    const isUser = await this.userService.user_login(user.user_Email);
+    const isUser = await this.userService.findUser(user.user_email);
     if (isUser) {
       const isPass = await bcrypt.compare(
-        user.user_Password,
-        isUser.user_Password,
+        user.user_password,
+        isUser.user_password,
       );
-      console.log(isPass);
       if (isPass) {
-        const payload = { sub: user.user_Email, username: user.user_Name };
+        const payload = { sub: user.user_email, username: user.user_name };
         return {
           access_token: await this.jwtService.signAsync(payload),
         };
@@ -33,13 +40,34 @@ export class AuthService {
     return new UnauthorizedException();
   }
 
-  // fro Registration
-  async register(user: User_Interface): Promise<User> {
-    const password = await bcrypt.hash(user.user_Password, 10);
-    const create_User = await this.userService.create(
-      user.user_Email,
-      password,
-    );
-    return create_User;
+  // Fro Registration
+  async registerUser(user: UserInterface): Promise<User> {
+    const password = await bcrypt.hash(user.user_password, 10);
+    try {
+      return await this.userService.createUser(user.user_email, password);
+    } catch {
+      throw new HttpException(
+        {
+          status: HttpStatus.CONFLICT,
+          error: 'User Already Existed',
+        },
+        HttpStatus.CONFLICT,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  // For Update User Data
+  async updateUser(user: UserUpdateInterface) {
+    if (user.user_password) {
+      user.user_password = await bcrypt.hash(user.user_password, 10);
+    }
+    try {
+      return await this.userService.updateUser(user);
+    } catch {
+      return new NotFoundException('User Not Found');
+    }
   }
 }

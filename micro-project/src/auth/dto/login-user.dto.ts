@@ -1,5 +1,5 @@
-export class Login_User_Dto {
-  user_Name?: string;
-  user_Email: string;
-  user_Password: string;
+export class LoginUserDto {
+  user_name?: string;
+  user_email: string;
+  user_password: string;
 }

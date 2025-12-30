@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ProductModule } from './product/product.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './user/user.module';
 import { Connection } from 'mongoose';
 import { AuthModule } from './auth/auth.module';
 import dotenv from 'dotenv';
@@ -23,7 +22,6 @@ dotenv.config();
       },
     ),
     ProductModule,
-    UserModule,
     AuthModule,
   ],
   controllers: [],

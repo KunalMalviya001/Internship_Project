@@ -1,21 +1,39 @@
-import { Controller, HttpStatus, HttpCode, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  HttpStatus,
+  HttpCode,
+  Post,
+  Body,
+  Put,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Login_User_Dto } from './dto/login-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { Public } from './skip.auth';
+import { RegisterUserDto } from './dto/register-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   // For login
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  logIn(@Body() logInDto: Login_User_Dto) {
-    return this.authService.login(logInDto);
+  logIn(@Body() logInDto: LoginUserDto) {
+    return this.authService.loginUser(logInDto);
   }
 
   // for Register
-  @Post('register')
-  async register(@Body() createUserDto: Login_User_Dto) {
-    return await this.authService.register(createUserDto);
+  @Public()
+  @Post('registerUser')
+  async register(@Body() registerUserDto: RegisterUserDto) {
+    return await this.authService.registerUser(registerUserDto);
+  }
+
+  @Public()
+  @Put('updateUser')
+  async updateUser(@Body() updateUserDto: UpdateUserDto) {
+    return await this.authService.updateUser(updateUserDto);
   }
 }

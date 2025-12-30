@@ -8,13 +8,13 @@ export type UserDocument = HydratedDocument<User>;
 @Schema()
 export class User {
   @Prop()
-  user_Name: string;
+  user_name: string;
 
   @Prop({ required: true })
-  user_Email: string;
+  user_email: string;
 
   @Prop({ required: true })
-  user_Password: string;
+  user_password: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Porduct' }] })
   cart: Product[];

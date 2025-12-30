@@ -1,9 +1,9 @@
 import { Controller, Get, Query, Body, Post, Delete } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { Product_Interface } from './interfaces/products.interface';
+import { ProductInterface } from './interfaces/products.interface';
 import { Product } from './schema/product.schema';
-import type { Product_Update_Interface } from './interfaces/productsUpdate.interface';
-import type { Product_Delete_Interface } from './interfaces/productsDelete.interface';
+import type { ProductUpdateInterface } from './interfaces/productsUpdate.interface';
+import type { ProductDeleteInterface } from './interfaces/productsDelete.interface';
 
 @Controller('product')
 export class ProductController {
@@ -19,7 +19,7 @@ export class ProductController {
   @Get(':category')
   async getSelectedProduct(
     @Query('category') category: string,
-  ): Promise<string | Product_Interface[]> {
+  ): Promise<string | ProductInterface[]> {
     // console.log('hello');
     return await this.productService
       .getCategoryProduct(category)
@@ -35,9 +35,9 @@ export class ProductController {
   async addNewProduct(
     @Body()
     product: {
-      product_Id: number;
-      product_Name: string;
-      product_Category: string;
+      product_id: number;
+      product_name: string;
+      product_category: string;
     },
   ): Promise<string> {
     return this.productService.addProduct(product);
@@ -46,7 +46,7 @@ export class ProductController {
   // For Updating Product
   @Post('update')
   async updateProductContoller(
-    @Body() product: Product_Update_Interface,
+    @Body() product: ProductUpdateInterface,
   ): Promise<string> {
     return this.productService.updateProduct(product);
   }
@@ -54,7 +54,7 @@ export class ProductController {
   // For delete A  Product
   @Delete('delete')
   async deleteProductController(
-    @Body() product: Product_Delete_Interface,
+    @Body() product: ProductDeleteInterface,
   ): Promise<string> {
     return this.productService.deleteProduct(product);
   }
