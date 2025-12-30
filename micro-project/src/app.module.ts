@@ -9,7 +9,7 @@ dotenv.config();
 @Module({
   imports: [
     MongooseModule.forRoot(
-      process.env.DB_connect || 'mongodb://localhost/nest',
+      process.env.DB_CONNECT || 'mongodb://localhost/nest',
       {
         onConnectionCreate: (connection: Connection) => {
           connection.on('connected', () => console.log('connected'));
