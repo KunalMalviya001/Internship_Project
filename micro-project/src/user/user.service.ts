@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../auth/schema/user.schema';
@@ -41,10 +37,10 @@ export class UserService {
       if (isUpdate) {
         return 'user Updated';
       } else {
-        throw new NotFoundException('User Not Found');
+        throw new Error();
       }
     } catch {
-      return new InternalServerErrorException('Not Update');
+      return new NotFoundException('Not Found User');
     }
   }
 }
