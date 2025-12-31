@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import dotenv from 'dotenv';
-import { IS_PUBLIC_KEY } from './skip.auth';
+import { IS_PUBLIC_KEY } from '../decorators/skip.auth';
 import { Reflector } from '@nestjs/core';
 dotenv.config();
 

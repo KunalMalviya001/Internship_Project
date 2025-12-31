@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from '../auth/schema/user.schema';
+import { User } from './schema/user.schema';
 import { UserUpdateInterface } from './interface/userUpdate.interface';
-// import { User_Delete_Interface } from './interface/userDelete.interface';
-
+import { UserInterface } from './interface/user.interface';
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User.name) private userMadule: Model<User>) {}
@@ -17,14 +16,14 @@ export class UserService {
   }
 
   // For User Registration
-  async createUser(email: string, hash_Password: string): Promise<User> {
-    if ((await this.userMadule.find({ user_email: email }).exec()).length > 0) {
+  async createUser(user: UserInterface): Promise<User> {
+    if (
+      (await this.userMadule.find({ user_email: user.user_email }).exec())
+        .length > 0
+    ) {
       throw new Error('User already Exist');
     }
-    return await this.userMadule.insertOne({
-      user_email: email,
-      user_password: hash_Password,
-    });
+    return await this.userMadule.insertOne(user);
   }
 
   // For User Update
@@ -41,6 +40,22 @@ export class UserService {
       }
     } catch {
       return new NotFoundException('Not Found User');
+    }
+  }
+
+  // For Delete User
+  async deleteUser(email: string): Promise<User | Error | undefined> {
+    try {
+      const isUserDelete = await this.userMadule.findOneAndDelete({
+        user_email: email,
+      });
+      if (isUserDelete) {
+        return isUserDelete;
+      } else {
+        throw new Error('no Deletion Happen');
+      }
+    } catch {
+      return new NotFoundException('User Not Found');
     }
   }
 }

@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Product } from '../../product/schema/product.schema';
+import { Role } from '../../common/enum/role.enum';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -18,6 +19,9 @@ export class User {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Porduct' }] })
   cart: Product[];
+
+  @Prop({ required: true })
+  roles: Role[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { ProductModule } from './product/product.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { JwtModule } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './common/guards/auth.guard';
 import dotenv from 'dotenv';
 dotenv.config();
 @Module({
@@ -21,10 +24,20 @@ dotenv.config();
         },
       },
     ),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: '60s' },
+    }),
+    UserModule,
     ProductModule,
-    AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
