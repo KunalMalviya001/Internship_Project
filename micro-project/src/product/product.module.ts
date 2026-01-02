@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ProductController } from './product.controller';
-import { ProductService } from './product.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductSchema } from './schema/product.schema';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { UpdateProductService } from './services/update-product/update-product.service';
+import { DeleteProductService } from './services/delete-product/delete-product.service';
+import { GetProductService } from './services/get-product/get-product.service';
+import { GetSortedProductService } from './services/get-sorted-product/get-sorted-product.service';
+import { CreateProductService } from './services/create-product/create-product.service';
 
 @Module({
   imports: [
@@ -11,6 +15,12 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
     CloudinaryModule,
   ],
   controllers: [ProductController],
-  providers: [ProductService],
+  providers: [
+    CreateProductService,
+    UpdateProductService,
+    DeleteProductService,
+    GetProductService,
+    GetSortedProductService,
+  ],
 })
 export class ProductModule {}

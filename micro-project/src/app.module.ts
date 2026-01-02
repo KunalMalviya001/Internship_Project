@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
 import dotenv from 'dotenv';
+import { OrderModule } from './order/order.module';
 dotenv.config();
 @Module({
   imports: [
@@ -27,10 +28,11 @@ dotenv.config();
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET_KEY,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '120s' },
     }),
     UserModule,
     ProductModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [

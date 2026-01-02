@@ -18,10 +18,10 @@ import { DeleteService } from './services/delete/delete.service';
 import { GetUserDetailService } from './services/get-user-detail/get-user-detail.service';
 import { RegisterService } from './services/register/register.service';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { User } from './schema/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Role } from '../common/enum/role.enum';
 import { Roles } from '../common/decorators/roles.decorator';
+import { GetUserInterface } from './interface/getUser.interface';
 
 @Controller('user')
 export class UserController {
@@ -59,15 +59,15 @@ export class UserController {
   @Roles(Role.Admin)
   async getUserDetail(
     @Query('user_email') user_email: string,
-  ): Promise<User | Error | undefined> {
+  ): Promise<GetUserInterface | Error | undefined> {
     return await this.getUserDetailService.getUserDetail(user_email);
   }
 
-  @Public()
+  // @Public()
   @Delete('deleteUser')
   async deleteUser(
     @Query('user_email') user_email: string,
-  ): Promise<User | Error | undefined> {
+  ): Promise<string | Error | undefined> {
     return await this.deleteService.deleteUser(user_email);
   }
 }

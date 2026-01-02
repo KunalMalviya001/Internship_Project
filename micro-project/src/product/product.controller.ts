@@ -9,8 +9,8 @@ import {
   UseInterceptors,
   RequestTimeoutException,
   ValidationPipe,
+  Put,
 } from '@nestjs/common';
-import { ProductService } from './product.service';
 import { ProductInterface } from './interfaces/products.interface';
 import { Product } from './schema/product.schema';
 import type { ProductUpdateInterface } from './interfaces/productsUpdate.interface';
@@ -18,20 +18,29 @@ import type { ProductDeleteInterface } from './interfaces/productsDelete.interfa
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CreateProductDto } from './dto/create-product.dt';
-import { Public } from '../common/decorators/skip.auth';
+// import { Public } from '../common/decorators/skip.auth';
+import { CreateProductService } from './services/create-product/create-product.service';
+import { UpdateProductService } from './services/update-product/update-product.service';
+import { DeleteProductService } from './services/delete-product/delete-product.service';
+import { GetProductService } from './services/get-product/get-product.service';
+import { GetSortedProductService } from './services/get-sorted-product/get-sorted-product.service';
 
 @Controller('product')
 export class ProductController {
   constructor(
-    private readonly productService: ProductService,
+    private readonly createProductService: CreateProductService,
+    private readonly updateProductService: UpdateProductService,
+    private readonly deleteProductService: DeleteProductService,
+    private readonly getProductService: GetProductService,
+    private readonly getSortedProductService: GetSortedProductService,
     private cloudinaryService: CloudinaryService,
   ) {}
 
   // For Get all product
-  @Public()
+  // @Public()
   @Get()
   getProduct(): Promise<Product[]> {
-    return this.productService.getAllProduct();
+    return this.getProductService.getAllProduct();
   }
 
   // For getting Categor wise Product
@@ -40,7 +49,7 @@ export class ProductController {
     @Query('category') category: string,
   ): Promise<string | ProductInterface[]> {
     // console.log('hello');
-    return await this.productService
+    return await this.getSortedProductService
       .getCategoryProduct(category)
       .then((data) => data)
       .catch((e) => {
@@ -50,7 +59,7 @@ export class ProductController {
   }
 
   // For Add new Product
-  @Public()
+  // @Public()
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async addNewProduct(
@@ -63,11 +72,10 @@ export class ProductController {
       let product_url: string[];
       return await upload_image
         .then((e) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           product_url = e?.secure_url as string[];
         })
         .then(() => {
-          return this.productService.addProduct(
+          return this.createProductService.addProduct(
             product as ProductInterface,
             product_url,
           );
@@ -79,11 +87,11 @@ export class ProductController {
   }
 
   // For Updating Product
-  @Post('update')
+  @Put('update')
   async updateProductContoller(
     @Body() product: ProductUpdateInterface,
   ): Promise<string> {
-    return this.productService.updateProduct(product);
+    return this.updateProductService.updateProduct(product);
   }
 
   // For delete A  Product
@@ -91,6 +99,6 @@ export class ProductController {
   async deleteProductController(
     @Body() product: ProductDeleteInterface,
   ): Promise<string> {
-    return this.productService.deleteProduct(product);
+    return this.deleteProductService.deleteProduct(product);
   }
 }
