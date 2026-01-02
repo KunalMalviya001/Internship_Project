@@ -8,6 +8,8 @@ import { DeleteProductService } from './services/delete-product/delete-product.s
 import { GetProductService } from './services/get-product/get-product.service';
 import { GetSortedProductService } from './services/get-sorted-product/get-sorted-product.service';
 import { CreateProductService } from './services/create-product/create-product.service';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from '../common/guards/roles.guard';
 
 @Module({
   imports: [
@@ -21,6 +23,10 @@ import { CreateProductService } from './services/create-product/create-product.s
     DeleteProductService,
     GetProductService,
     GetSortedProductService,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class ProductModule {}

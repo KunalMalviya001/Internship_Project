@@ -57,6 +57,8 @@ export class UserController {
   @Get()
   // @Public()
   @Roles(Role.Admin)
+  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   async getUserDetail(
     @Query('user_email') user_email: string,
   ): Promise<GetUserInterface | Error | undefined> {

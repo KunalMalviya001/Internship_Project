@@ -18,12 +18,14 @@ import type { ProductDeleteInterface } from './interfaces/productsDelete.interfa
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CreateProductDto } from './dto/create-product.dt';
-// import { Public } from '../common/decorators/skip.auth';
+import { Public } from '../common/decorators/skip.auth';
 import { CreateProductService } from './services/create-product/create-product.service';
 import { UpdateProductService } from './services/update-product/update-product.service';
 import { DeleteProductService } from './services/delete-product/delete-product.service';
 import { GetProductService } from './services/get-product/get-product.service';
 import { GetSortedProductService } from './services/get-sorted-product/get-sorted-product.service';
+import { Roles } from '../common/decorators/roles.decorator';
+import { Role } from '../common/enum/role.enum';
 
 @Controller('product')
 export class ProductController {
@@ -37,13 +39,14 @@ export class ProductController {
   ) {}
 
   // For Get all product
-  // @Public()
+  @Public()
   @Get()
   getProduct(): Promise<Product[]> {
     return this.getProductService.getAllProduct();
   }
 
   // For getting Categor wise Product
+  @Public()
   @Get(':category')
   async getSelectedProduct(
     @Query('category') category: string,
@@ -60,6 +63,10 @@ export class ProductController {
 
   // For Add new Product
   // @Public()
+
+  @Roles(Role.Admin)
+  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async addNewProduct(
@@ -87,6 +94,10 @@ export class ProductController {
   }
 
   // For Updating Product
+
+  @Roles(Role.Admin)
+  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @Put('update')
   async updateProductContoller(
     @Body() product: ProductUpdateInterface,
@@ -95,6 +106,10 @@ export class ProductController {
   }
 
   // For delete A  Product
+
+  @Roles(Role.Admin)
+  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @Delete('delete')
   async deleteProductController(
     @Body() product: ProductDeleteInterface,

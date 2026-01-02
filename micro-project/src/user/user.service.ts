@@ -23,7 +23,6 @@ export class UserService {
     ) {
       throw new Error('User already Exist');
     }
-    user.hidden = false;
     return await this.userMadule.insertOne(user);
   }
 
@@ -45,14 +44,13 @@ export class UserService {
   }
 
   // For Delete User
-  async deleteUser(email: string): Promise<string | Error | undefined> {
+  async deleteUser(email: string): Promise<User | Error | undefined> {
     try {
-      const isUserDelete = await this.userMadule.findOne({
+      const isUserDelete = await this.userMadule.findOneAndDelete({
         user_email: email,
       });
       if (isUserDelete) {
-        console.log(isUserDelete);
-        return 'User Deleted';
+        return isUserDelete;
       } else {
         throw new Error('no Deletion Happen');
       }
