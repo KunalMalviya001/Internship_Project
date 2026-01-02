@@ -9,7 +9,7 @@ export class DeleteService {
     try {
       const isUserDelete = await this.userService.deleteUser(email);
       if (isUserDelete) {
-        return isUserDelete;
+        return 'user deleted';
       } else {
         throw new Error('no user Delete');
       }
